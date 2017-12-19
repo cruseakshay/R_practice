@@ -1,3 +1,4 @@
+# Take datasets from https://www.datacamp.com/courses/machine-learning-toolbox
 #Try a 60/40 split
 # Shuffle row indices: rows
 rows <- sample(nrow(Sonar))
@@ -86,3 +87,18 @@ model <- train(
 
 # Print model to console
 model
+
+# Hyper parameter tuning 
+# Fit random forest: model
+model <- train(
+  quality ~ .,
+  tuneLength = 3,
+  data = wine, method = "ranger",
+  trControl = trainControl(method = "cv", number = 5, verboseIter = TRUE)
+)
+
+# Print model to console
+model
+
+# Plot model
+plot(model) 
