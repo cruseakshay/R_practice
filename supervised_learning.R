@@ -102,3 +102,18 @@ model
 
 # Plot model
 plot(model) 
+
+#Fit a random forest with custom tuning
+# Fit random forest: model
+model <- train(
+  quality ~ .,
+  tuneGrid = data.frame(mtry = c(2,3,7)),
+  data = wine, method = "ranger",
+  trControl = trainControl(method = "cv", number = 5, verboseIter = TRUE)
+)
+
+# Print model to console
+model
+
+# Plot model
+plot(model)
