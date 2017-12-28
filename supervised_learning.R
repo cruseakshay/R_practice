@@ -117,3 +117,30 @@ model
 
 # Plot model
 plot(model)
+
+#using glmnet
+# Create custom trainControl: myControl
+myControl <- trainControl(
+  method = "cv", number = 10,
+  summaryFunction = twoClassSummary,
+  classProbs = TRUE, # IMPORTANT!
+  verboseIter = TRUE
+)
+
+#Fit glmnet with custom trainControl
+# glmnet is an extention of the generalized linear regression model (or glm) that places constraints on the magnitude of the coefficients to prevent overfitting.
+# Ridge regression (or alpha = 0)
+# Lasso regression (or alpha = 1)
+
+# Fit glmnet model: model
+model <- train(
+  y ~ . , overfit,
+  method = "glmnet",
+  trControl = myControl
+)
+
+# Print model to console
+model
+
+# Print maximum ROC statistic
+max(model[["results"]])
