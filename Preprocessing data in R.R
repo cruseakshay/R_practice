@@ -23,3 +23,6 @@ model2 <- train(
 
 # Print model to console
 model2
+
+# compare plot result for out of box samples
+dotplot(resamples, metric = "ROC")
