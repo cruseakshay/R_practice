@@ -56,3 +56,8 @@ bwplot(resamples, metric = "ROC")
 xyplot(resamples, metric ="ROC")
 
 # note : 'caretEnsemble' provides the caretList() function for creating multiple caret models at once on the same dataset.
+# Create ensemble model: stack
+stack <- caretStack(model_list, method = "glm")
+
+# Look at summary
+summary(stack)
