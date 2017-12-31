@@ -15,3 +15,135 @@ term_frequency[1:10]
 
 # Plot a barchart of the 10 most common words
 barplot(term_frequency[1:10], col = "tan", las = 2)
+
+# Frequent terms with qdap
+# Create frequency
+frequency <- freq_terms(tweets$text, top = 10, at.least = 3, stopwords = "Top200Words")
+
+# Make a frequency barchart
+plot(frequency)
+
+# Create frequency2
+frequency2 <- freq_terms(tweets$text, top = 10, at.least = 3, stopwords = tm::stopwords("english"))
+
+# Make a frequency2 barchart
+plot(frequency2)
+
+# simple word cloud : In a word cloud, size is often scaled to frequency and in some cases the colors may indicate another measurement. 
+## term_frequency is loaded into your workspace
+
+# Load wordcloud package
+library(wordcloud)
+
+# Print the first 10 entries in term_frequency
+head(term_frequency, 10)
+
+# Create word_freqs
+word_freqs <- data.frame(term = names(term_frequency), num = term_frequency)
+
+# Create a wordcloud for the values in word_freqs
+wordcloud(word_freqs$term, word_freqs$num, max.words = 100, colors = "red")
+
+# Stop words and word clouds
+# Add new stop words to clean_corpus()
+clean_corpus <- function(corpus){
+  corpus <- tm_map(corpus, removePunctuation)
+  corpus <- tm_map(corpus, stripWhitespace)
+  corpus <- tm_map(corpus, removeNumbers)
+  corpus <- tm_map(corpus, content_transformer(tolower))
+  corpus <- tm_map(corpus, removeWords, 
+                   c(stopwords("en"), "amp", "chardonnay", "wine", "glass"))
+  return(corpus)
+}
+
+# Create clean_chardonnay
+clean_chardonnay <- clean_corpus(chardonnay_corp)
+
+# Create chardonnay_tdm
+chardonnay_tdm <- TermDocumentMatrix(clean_chardonnay)
+
+# Create chardonnay_m
+chardonnay_m <- as.matrix(chardonnay_tdm)
+
+# Create chardonnay_words
+chardonnay_words<- rowSums(chardonnay_m)
+
+# Plot the better word cloud
+# Sort the chardonnay_words in descending order
+chardonnay_words <- sort(chardonnay_words, decreasing = TRUE)
+
+# Print the 6 most frequent chardonnay terms
+head(chardonnay_words)
+
+# Create chardonnay_freqs
+chardonnay_freqs <- data.frame(term = names(chardonnay_words), num = chardonnay_words)
+
+# Create a wordcloud for the values in word_freqs
+wordcloud(chardonnay_freqs$term, chardonnay_freqs$num, max.words = 50, colors = "red")
+
+# Improve word cloud colors
+# Print the list of colors
+colors()
+
+# Print the wordcloud with the specified colors
+wordcloud(chardonnay_freqs$term, chardonnay_freqs$num, max.words = 100, 
+    colors = c( "grey80", "darkgoldenrod1", "tomato"))
+
+# List the available colors
+display.brewer.all()
+
+# Use prebuilt color palettes
+# Create purple_orange
+purple_orange <- brewer.pal(10, "PuOr")
+
+# Drop 2 faintest colors
+purple_orange <- purple_orange[-(1:2)]
+
+# Create a wordcloud with purple_orange palette
+wordcloud(chardonnay_freqs$term, chardonnay_freqs$num, max.words = 100, colors = purple_orange)
+
+# Finding common words, to visualize common words across multiple documents
+# Create all_coffee
+all_coffee <- paste(coffee_tweets$text, collapse = " ")
+
+# Create all_chardonnay
+all_chardonnay <- paste(chardonnay_tweets$text, collapse = " ")
+
+# Create all_tweets
+all_tweets <- c(all_coffee, all_chardonnay)
+
+# Convert to a vector source
+all_tweets <- VectorSource(all_tweets)
+
+# Create all_corpus
+all_corpus <- VCorpus(all_tweets)
+
+# Visualize common words using commonality cloud
+# Clean the corpus
+all_clean <- clean_corpus(all_corpus)
+
+# Create all_tdm
+all_tdm <- TermDocumentMatrix(all_clean)
+
+# Create all_m
+all_m <- as.matrix(all_tdm)
+
+# Print a commonality cloud
+commonality.cloud(all_m, max.words = 100, colors = "steelblue1")
+
+# Visualize dissimilar words, using comparison cloud
+# Clean the corpus
+all_clean <- clean_corpus(all_corpus)
+
+# Create all_tdm
+all_tdm <- TermDocumentMatrix(all_clean)
+
+# Give the columns distinct names
+colnames(all_tdm) <- c("coffee", "chardonnay")
+
+# Create all_m
+all_m <- as.matrix(all_tdm)
+
+# Create comparison cloud
+comparison.cloud(all_m, colors = c("orange", "blue"), max.words = 50)
+
