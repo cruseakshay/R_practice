@@ -1,4 +1,5 @@
 # first step is to download and prepare the data.
+# dataset : Wisconsin breast cancer data
 url <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1903/datasets/WisconsinCancer.csv"
 
 # Download the data: wisc.df
@@ -97,3 +98,32 @@ wisc.hclust.clusters <- cutree(wisc.hclust, k = 4)
 
 # Compare cluster membership to actual diagnoses
 table(wisc.hclust.clusters, diagnosis)
+
+# k-means clustering and comparing results
+# Create a k-means model on wisc.data: wisc.km
+wisc.km <- kmeans(scale(wisc.data), centers = 2, nstart = 20)
+
+# Compare k-means to actual diagnoses
+# How well does k-means separate the two diagnoses?
+table(wisc.km$cluster, diagnosis)
+
+# Compare k-means to hierarchical clustering
+table(wisc.km$cluster, wisc.hclust.clusters)
+
+# ans : Looking at the second table generated, 
+# it looks like clusters 1, 2, and 4 from the hierarchical clustering model can be interpreted as the cluster 1 equivalent from the k-means algorithm,
+# and cluster 3 can be interpreted as the cluster 2 equivalent.
+
+# Clustering on PCA results
+# how using PCA affects the model? 
+# Create a hierarchical clustering model: wisc.pr.hclust
+wisc.pr.hclust <- hclust(dist(wisc.pr$x[, 1:7]), method = "complete")
+
+# Cut model into 4 clusters: wisc.pr.hclust.clusters
+wisc.pr.hclust.clusters <- cutree(wisc.pr.hclust, k = 4)
+
+# Compare to actual diagnoses
+table(wisc.pr.hclust.clusters, diagnosis)
+table(wisc.hclust.clusters, diagnosis)
+# Compare to k-means and hierarchical
+table(wisc.km$cluster, diagnosis)
