@@ -176,3 +176,8 @@ pyramid.plot(top15_df$x, top15_df$y,
              main = "Words in Common", unit = NULL)
 
 # Step 6: Reach a conclusion
+# Draw conclusions, insights, or recommendations
+# que :Based on the visual, does Amazon or Google have a better work-life balance according to current employee reviews?
+
+# what would you recommend Amazon HR recruiters look for in candidates?
+findAssocs(amzn_p_tdm, "fast paced", 0.2)[[1]][1:15]
