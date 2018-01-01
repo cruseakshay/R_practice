@@ -93,3 +93,81 @@ ggplot(associations_df, aes(y = associations_df[, 1])) +
              data = associations_df, size = 3) + 
   theme_gdocs()
 
+# Changing n-grams
+# Make tokenizer function 
+tokenizer <- function(x)
+    NGramTokenizer(x, Weka_control(min = 2, max = 2))
+
+# Create unigram_dtm
+unigram_dtm <- DocumentTermMatrix(text_corp)
+
+# Create bigram_dtm
+bigram_dtm <- DocumentTermMatrix(text_corp, control = list(tokenize = tokenizer))
+
+# Examine unigram_dtm
+unigram_dtm
+
+# Examine bigram_dtm
+bigram_dtm
+
+# How do bigrams affect word clouds?
+# Remember how "Marvin" and "Gaye" were separate and large terms in the chardonnay word cloud?
+# Create bigram_dtm_m
+bigram_dtm_m <- as.matrix(bigram_dtm)
+
+# Create freq
+freq <- colSums(bigram_dtm_m)
+
+# Create bi_words
+bi_words <- names(freq)
+
+# Examine part of bi_words
+bi_words[2577:2587]
+
+# Plot a wordcloud
+wordcloud(bi_words, freq, max.words = 15)
+
+# Changing frequency weights
+# note : The most popular weight is TfIdf, which stands for term frequency-inverse document frequency.
+
+# note : From a common sense perspective, if a term appears often it must be important. 
+# This attribute is represented by term frequency (i.e. Tf), which is normalized by the length of the document.
+# However, if the term appears in all documents, it is not likely to be insightful. This is captured in the inverse document frequency (i.e. Idf).
+
+# Create tf_tdm
+tf_tdm <- TermDocumentMatrix(text_corp)
+
+# Create tfidf_tdm
+tfidf_tdm <- TermDocumentMatrix(text_corp, control = list(weighting = weightTfIdf))
+
+# Create tf_tdm_m
+tf_tdm_m <- as.matrix(tf_tdm)
+
+# Create tfidf_tdm_m 
+tfidf_tdm_m <- as.matrix(tfidf_tdm)
+
+# Examine part of tf_tdm_m
+tf_tdm_m[508:509, 5:10]
+
+# Examine part of tfidf_tdm_m
+tfidf_tdm_m[508:509, 5:10]
+
+# Capturing metadata in tm
+# Add author to custom reading list
+custom_reader <- readTabular(mapping = list(content = "text", 
+                                            id = "num",
+                                            author = "screenName",
+                                            date = "created"
+                                            ))
+
+# Make corpus with custom reading
+text_corpus <- VCorpus(DataframeSource(tweets), readerControl = list(reader = custom_reader))
+
+# Clean corpus
+text_corpus <- clean_corpus(text_corpus)
+
+# Print data
+text_corpus[[1]][1]
+
+# Print metadata
+text_corpus[[1]][2]
