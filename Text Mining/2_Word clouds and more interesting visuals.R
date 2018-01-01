@@ -147,3 +147,38 @@ all_m <- as.matrix(all_tdm)
 # Create comparison cloud
 comparison.cloud(all_m, colors = c("orange", "blue"), max.words = 50)
 
+# using pyramid plots
+# Create common_words
+common_words <- subset(all_tdm_m, all_tdm_m[, 1] > 0 & all_tdm_m[, 2] > 0)
+
+# Create difference
+difference <- abs(common_words[, 1] - common_words[, 2])
+
+# Combine common_words and difference
+common_words <- cbind(common_words, difference)
+
+# Order the data frame from most differences to least
+common_words <- common_words[order(common_words[, 3], decreasing = TRUE), ]
+
+# Create top25_df
+top25_df <- data.frame(x = common_words[1:25, 1], 
+                       y = common_words[1:25, 2], 
+                       labels = rownames(common_words[1:25, ]))
+
+# Create the pyramid plot
+pyramid.plot(top25_df$x, top25_df$y,
+             labels = top25_df$labels, gap = 8,
+             top.labels = c("Chardonnay", "Words", "Coffee"),
+             main = "Words in Common", laxlab = NULL, 
+             raxlab = NULL, unit = NULL)
+
+# Visualize word networks-- Word networks show term association and cohesion.
+# Word association
+word_associate(coffee_tweets$text, match.string = c("barista"), 
+               stopwords = c(Top200Words, "coffee", "amp"), 
+               network.plot = TRUE, cloud.colors = c("gray85", "darkred"))
+
+# Add title
+title(main = "Barista Coffee Tweet Associations")
+
+
