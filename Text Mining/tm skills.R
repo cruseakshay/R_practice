@@ -73,3 +73,23 @@ plot(hcd, main = "Better Dendrogram")
 
 # Add cluster rectangles 
 rect.dendrogram(hcd,k = 2, border = "grey50")
+
+# Using word association
+# note :  For any given word, findAssocs() calculates its correlation with every other word in a TDM or DTM.
+# Scores range from 0 to 1. A score of 1 means that two words always appear together, while a score of 0 means that they never appear together.
+
+# Create associations
+associations <- findAssocs(tweets_tdm, "venti", 0.2)
+
+# View the venti associations
+associations
+
+# Create associations_df
+associations_df <- list_vect2df(associations)[,2:3]
+
+# Plot the associations_df values (don't change this)
+ggplot(associations_df, aes(y = associations_df[, 1])) + 
+  geom_point(aes(x = associations_df[, 2]), 
+             data = associations_df, size = 3) + 
+  theme_gdocs()
+
