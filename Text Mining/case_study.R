@@ -17,6 +17,25 @@ goog_pros <- goog$pros
 # Create goog_cons
 goog_cons <- goog$cons
 
+# useful function 
+qdap_clean <- function(x){
+  x <- replace_abbreviation(x)
+  x <- replace_contraction(x)
+  x <- replace_number(x)
+  x <- replace_ordinal(x)
+  x <- replace_ordinal(x)
+  x <- replace_symbol(x)
+  x <- tolower(x)
+  return(x)
+}
+tm_clean <- function(corpus){
+  corpus <- tm_map(corpus, removePunctuation)
+  corpus <- tm_map(corpus, stripWhitespace)
+  corpus <- tm_map(corpus, removeWords, 
+                   c(stopwords("en"), "Google", "Amazon", "company"))
+  return(corpus)
+}
+
 # step 3: Text organization
 # Alter amzn_pros
 amzn_pros <- qdap_clean(amzn_pros)
