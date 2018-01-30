@@ -74,7 +74,7 @@ goog_pros_corp <- tm_clean(goog_p_corp)
 goog_cons_corp <- tm_clean(goog_c_corp)
 
 # Steps 4 & 5: Feature extraction & analysis
-# Feature extraction & analysis: amzn_pros : bag of words approach
+# amzn_pros : bag of words approach
 # Create amzn_p_tdm
 amzn_p_tdm <- TermDocumentMatrix(amzn_pros_corp, control = list(tokenize = tokenizer))
 
