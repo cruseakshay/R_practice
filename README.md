@@ -1,2 +1,2 @@
 # R_practice
-R conventional practice
+R practice for Data Science
